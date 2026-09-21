@@ -96,6 +96,54 @@ const PROJECTS = [
     demoUrl: null,
     detail:
       "A template for connecting two systems that don't natively integrate — authentication, pagination and data transformation handled once, reused per client."
+  },
+  {
+    id: "human-approval-engine",
+    title: "Human Approval Engine",
+    summary: "Route sensitive or uncertain automation decisions to the right person before execution.",
+    flow: ["Decision", "Risk Check", "Reviewer", "Approve", "Execute", "Audit"],
+    status: "architecture-ready",
+    tags: ["Human Gate", "Audit", "Governance"],
+    pageUrl: null,
+    githubUrl: null,
+    demoUrl: null,
+    detail: "A reusable approval layer for outbound messages, refunds, cancellations and low-confidence AI decisions, with clear ownership and a recorded decision trail."
+  },
+  {
+    id: "error-handling-system",
+    title: "Error Handling System",
+    summary: "Turn failed workflow runs into visible, diagnosable and recoverable operational events.",
+    flow: ["Detect", "Classify", "Retry", "Escalate", "Recover", "Report"],
+    status: "planned",
+    tags: ["Observability", "Retries", "n8n"],
+    pageUrl: null,
+    githubUrl: null,
+    demoUrl: null,
+    detail: "Centralizes workflow failures, separates transient from permanent errors, retries safely and escalates with the context needed to restore service quickly."
+  },
+  {
+    id: "automation-roi-dashboard",
+    title: "Automation ROI Dashboard",
+    summary: "Measure throughput, time saved, exception rates and operational outcomes without invented metrics.",
+    flow: ["Events", "Metrics", "Aggregate", "Compare", "Report"],
+    status: "planned",
+    tags: ["Reporting", "PostgreSQL", "ROI"],
+    pageUrl: null,
+    githubUrl: null,
+    demoUrl: null,
+    detail: "Converts workflow execution data into operational measures such as response time, completion rate, exceptions and verified time saved."
+  },
+  {
+    id: "ai-operations-os",
+    title: "AI Operations OS",
+    summary: "A governed automation layer connecting intake, AI, data, actions, approvals and reporting.",
+    flow: ["Intake", "AI", "Route", "Act", "Approve", "Operate", "Measure"],
+    status: "architecture-ready",
+    tags: ["n8n", "AI Operations", "System Design"],
+    pageUrl: null,
+    githubUrl: null,
+    demoUrl: null,
+    detail: "The flagship architecture combines the reusable patterns across the portfolio into one operational system for European SMEs."
   }
 ];
 

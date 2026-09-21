@@ -11,7 +11,7 @@
     },
     {
       name: "AI Brain",
-      sub: "Classify · score · language",
+      sub: "Classify · score · extract",
       description: "Use structured model outputs instead of uncontrolled free-form responses.",
       concern: "The model is constrained to a schema. A response that doesn't validate is treated as a failure, not silently accepted."
     },
@@ -55,6 +55,7 @@
 
   const archRail = document.getElementById("archRail");
   const archDetail = document.getElementById("archDetail");
+  archRail.setAttribute("role", "tablist");
 
   function renderStages() {
     STAGES.forEach((stage, i) => {
@@ -63,12 +64,24 @@
       btn.className = "arch-stage";
       btn.type = "button";
       btn.setAttribute("aria-pressed", "false");
+      btn.setAttribute("role", "tab");
       btn.dataset.index = String(i);
       btn.innerHTML =
         '<span class="arch-num">' + String(i + 1).padStart(2, "0") + "</span>" +
         "<h3>" + stage.name + "</h3>" +
         '<span class="arch-sub">' + stage.sub + "</span>";
       btn.addEventListener("click", () => selectStage(i));
+      btn.addEventListener("keydown", (event) => {
+        if (!["ArrowLeft", "ArrowRight", "Home", "End"].includes(event.key)) return;
+        event.preventDefault();
+        let next = i;
+        if (event.key === "ArrowLeft") next = (i - 1 + STAGES.length) % STAGES.length;
+        if (event.key === "ArrowRight") next = (i + 1) % STAGES.length;
+        if (event.key === "Home") next = 0;
+        if (event.key === "End") next = STAGES.length - 1;
+        selectStage(next);
+        archRail.querySelectorAll(".arch-stage")[next].focus();
+      });
       li.appendChild(btn);
       archRail.appendChild(li);
     });
@@ -77,7 +90,10 @@
   function selectStage(index) {
     const stage = STAGES[index];
     document.querySelectorAll(".arch-stage").forEach((el) => {
-      el.setAttribute("aria-pressed", String(Number(el.dataset.index) === index));
+      const selected = Number(el.dataset.index) === index;
+      el.setAttribute("aria-pressed", String(selected));
+      el.setAttribute("aria-selected", String(selected));
+      el.tabIndex = selected ? 0 : -1;
     });
     archDetail.innerHTML =
       '<span class="detail-eyebrow">Stage ' + String(index + 1).padStart(2, "0") + " — " + stage.name + "</span>" +
@@ -122,6 +138,7 @@
 
   /* ---------- Modal ---------- */
   const backdrop = document.getElementById("modalBackdrop");
+  const modal = document.getElementById("modal");
   const modalBody = document.getElementById("modalBody");
   const modalClose = document.getElementById("modalClose");
   let lastFocused = null;
@@ -150,18 +167,28 @@
 
     lastFocused = document.activeElement;
     backdrop.hidden = false;
+    document.body.classList.add("modal-open");
     modalClose.focus();
     document.addEventListener("keydown", onModalKeydown);
   }
 
   function closeModal() {
     backdrop.hidden = true;
+    document.body.classList.remove("modal-open");
     document.removeEventListener("keydown", onModalKeydown);
     if (lastFocused) lastFocused.focus();
   }
 
   function onModalKeydown(e) {
     if (e.key === "Escape") closeModal();
+    if (e.key === "Tab") {
+      const focusable = modal.querySelectorAll('a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])');
+      if (!focusable.length) return;
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+      if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+    }
   }
 
   grid.addEventListener("click", (e) => {
@@ -189,4 +216,42 @@
       navToggle.setAttribute("aria-expanded", "false");
     });
   });
+
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape" && header.classList.contains("nav-open")) {
+      header.classList.remove("nav-open");
+      navToggle.setAttribute("aria-expanded", "false");
+      navToggle.focus();
+    }
+  });
+
+  /* ---------- Contact links ---------- */
+  const subject = "Automation Enquiry — DeTLeng Ops";
+  const body = `Hello DeTLeng Ops team,
+
+I’d like to discuss automating a repetitive business process.
+
+What I would like to automate:
+-
+
+How the process works today:
+-
+
+Tools or systems currently involved:
+-
+
+What a successful result would look like:
+-
+
+Approximate volume or frequency:
+-
+
+Any additional details:
+-
+
+Thank you. I look forward to hearing from you.
+
+Best regards,`;
+  const mailto = `mailto:info@detleng.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+  document.querySelectorAll(".contact-link").forEach((link) => link.setAttribute("href", mailto));
 })();
